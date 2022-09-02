@@ -1,0 +1,46 @@
+# Each section should begin with [section]
+# Example: 
+# Link Type=http
+# Program to execute when link clicked=cmd.exe /k telnet %ip% %port%
+# Port conditions=80
+# Service conditions=http
+# Plugin name conditions=
+# Plugin ID conditions=
+# Connect to host before opening the link=false (if 'true': will try to connect to host with smb credentials before opening the link)
+
+# ------------------------------------------- FTP --------------------------------------------
+[section]
+Link Type=ftp
+Program to execute when link clicked=cmd.exe /k ftp %ip%
+Port conditions=21
+Service conditions=ftp 
+
+# ------------------------------------------- HTTP -------------------------------------------
+[section] HTTP
+Link Type=http
+Program to execute when link clicked="C:\Program Files\Internet Explorer\iexplore.exe" http://%ip%:%port%/%link%
+Port conditions=80,81,443,8080,8888,8181,8989,8099,8090
+Service conditions=www,http
+
+# ------------------------------------------- SMB --------------------------------------------
+[section]
+Link Type=smb
+Plugin ID conditions=42411,10396,13
+Program to execute when link clicked=explorer.exe \\%ip%\%link%
+Connect to host before opening the link= true
+Use Windows Style Link=true
+		  
+
+# ------------------------------------------- SSH --------------------------------------------
+[section]
+Link Type=putty
+Program to execute when link clicked="C:\Program Files (x86)\PuTTY\putty.exe" %ip%
+Port conditions=22
+Service conditions=ssh
+
+# ------------------------------------------- TELNET ------------------------------------------
+[section]
+Link Type=telnet
+Program to execute when link clicked=cmd.exe /k telnet %ip% %port% 
+Port conditions=23
+Service conditions=telnet

@@ -1,0 +1,107 @@
+# Title=will be used to recognize section (mandatory). Sections with the same "Title" value will be grouped automatically.
+# Plugin ID=what plugin id to parse 
+# Regex= Must be a regular expression. The regex will be applied on each line of the plugin output.
+# Result=How to print result list (keywords are %ip%; %port%; $x
+# multiple $ are supported ($0, $1, $2 ...) 
+
+# ------------------------------------------- FTP --------------------------------------------
+[section] FTP Anonymous - Root directory listed (nessus)
+Title=NESSUS-Anonymous FTP Enabled
+Plugin ID=10079
+Regex=The contents of the remote FTP root are 
+Result=ftp://%ip%:%port%
+
+[section] FTP Writable Directories (nessus)
+Title=NESSUS-FTP Writable Directories
+Plugin ID=19782
+Regex=- /(.*)$
+Result=ftp://%ip%:%port%/$1
+
+# ------------------------------------------- NFS --------------------------------------------
+[section]
+Title=NESSUS-NFS Share User Mountable .SH
+Plugin ID=15984
+Regex=^\+ (/.*)
+Result=mount %ip%:$1 $dir
+
+[section] FTP Writable Directories (nessus)
+Title=NESSUS-FTP Writable Directories
+Plugin ID=19782
+Regex=- /(.*)$
+Result=ftp://%ip%:%port%/$1
+
+# ------------------------------------------- HTTP -------------------------------------------
+[section] HTTP Files Disclosure (nessus)
+Title=NESSUS-HTTP backup files disclosure list
+Plugin ID=11411
+Regex=^  - File : /(.*)$
+Result=http://%ip%:%port%/$1
+
+[section] PluginID parser - Browsable directory (nessus)
+Title=NESSUS-HTTP Browsable directory list
+Plugin ID=40984,10662
+Regex=^/(.*)/
+Result=http://%ip%:%port%/$1
+
+[section] 43111: HTTP Methods Allowed (per directory) (nessus)
+Title=NESSUS-HTTP Browsable directory list
+Plugin ID=43111
+Regex=^    /(.*)$
+Result=http://%ip%:%port%/$1
+
+[section]
+Title=NESSUS-HTTP Server list (script for windows batch)
+Plugin ID=43111
+Regex=^    /(.*)$
+Result=start http://%ip%:%port%/$1 && pause
+
+# ------------------------------------------- SMB --------------------------------------------
+
+[section] SMB shares (at least readable) (nessus) output for windows
+# Example: ^- c$  - (readable)$
+Title=NESSUS-SMB-shares-readable (windows)
+Plugin ID=42411
+Regex=^- (.*) - \((.*)\)$
+Result=\\%ip%\$1
+
+
+# ------------------------------------------- USERS ------------------------------------------
+[section] USERS (windows) (nessus)
+Title=NESSUS-Windows-Users
+Plugin ID=10399
+Regex=- (.*) \(.*\)
+Result=$1
+
+# ------------------------------------------- SMBNAME of COMPUTERS --------------------------------------------
+[section] FTP Anonymous - Root directory listed (nessus)
+Title=NESSUS-SMBName
+Plugin ID=10150
+Regex=[ ]*(.*?) *= Computer name
+Result=$1 (%ip%)
+
+# -----------------------------------------------------------------------NMAP ---------------------------------------------------------------------------------------
+[section] smb-enum-sessions - Administrator (nmap)
+Title=NMAP-smb-enum-sessions - Administrator 
+Plugin ID=130099
+Regex=(.*admin.*)
+Result=%ip% - $1
+
+[section] smb-enum-sessions connected users (nmap)
+Title=NMAP-smb-enum-sessions - connected users
+Plugin ID=130099
+Regex=(.*is connected from.*)
+Result=%ip% - $1
+
+[section] smb-enum-shares (nmap)
+Title=NMAP-smb-enum-shares
+Plugin ID=130100
+Regex=^  ([^ ].*)$
+Result=smb://%ip%:%port/$1
+
+# smb-os-discovery
+[section] 
+Title=NMAP-smb-os-discovery
+Plugin ID=130102
+Regex=OS: (.*)\n Name: (.*)\n.*System time.*
+Result=$2 - %ip%  - $1
+ApplyRegexOnAllText=true
